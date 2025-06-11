@@ -1,0 +1,20 @@
+# .gitignore
+# Ignore node_modules and caches
+node_modules/
+.cache/
+frontend/node_modules/
+frontend/.cache/
+*.pack
+
+# IDE files
+.idea/
+*.iml
+
+# Build folders
+dist/
+build/
+target/
+
+# System files
+.DS_Store
+Thumbs.db
