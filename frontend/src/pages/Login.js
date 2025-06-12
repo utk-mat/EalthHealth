@@ -9,16 +9,18 @@ import {
   Box,
   Alert,
 } from '@mui/material';
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../store/slices/authSlice';
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading: authLoading, error: authError } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -30,25 +32,17 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/login', formData);
+      await dispatch(login(formData)).unwrap();
       
-      // Store the token in localStorage
-      localStorage.setItem('token', response.data.token);
-      
-      // Store user info if needed
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-      
-      // Redirect to medicines page
       navigate('/medicines');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
-    } finally {
-      setLoading(false);
+      setError(err.message || 'Login failed. Please check your credentials.');
     }
   };
+
+  const isLoading = authLoading;
 
   return (
     <Container maxWidth="sm">
@@ -93,9 +87,9 @@ const Login = () => {
               color="primary"
               size="large"
               sx={{ mt: 3 }}
-              disabled={loading}
+              disabled={isLoading}
             >
-              {loading ? 'Logging in...' : 'Login'}
+              {isLoading ? 'Logging in...' : 'Login'}
             </Button>
           </form>
           <Box sx={{ mt: 2, textAlign: 'center' }}>

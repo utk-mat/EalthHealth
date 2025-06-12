@@ -64,4 +64,16 @@ public class MedicineController {
     public ResponseEntity<List<Medicine>> getMedicinesRequiringPrescription() {
         return ResponseEntity.ok(medicineService.getMedicinesRequiringPrescription());
     }
+
+    @GetMapping("/featured")
+    public ResponseEntity<List<Medicine>> getFeaturedMedicines() {
+        return ResponseEntity.ok(medicineService.getFeaturedMedicines());
+    }
+
+    @GetMapping("/sorted")
+    public ResponseEntity<List<Medicine>> getSortedMedicines(
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection) {
+        return ResponseEntity.ok(medicineService.getSortedMedicines(sortBy, sortDirection));
+    }
 } 

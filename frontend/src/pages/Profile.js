@@ -1,68 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { updateProfile } from '../store/slices/authSlice';
-import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt } from 'react-icons/fa';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { FaUser, FaHistory, FaPills, FaCalendarAlt } from 'react-icons/fa';
+import { formatPrice } from '../utils/currency';
 
 const Profile = () => {
-  const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: {
-      street: '',
-      city: '',
-      state: '',
-      zipCode: '',
-    },
-  });
+  const [orderHistory, setOrderHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    const fetchOrderHistory = async () => {
+      try {
+        const response = await fetch(`/api/orders/user/${user._id}`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+        if (!response.ok) {
+          throw new Error('Failed to fetch order history');
+        }
+        const data = await response.json();
+        setOrderHistory(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (user) {
-      setFormData({
-        name: user.name || '',
-        email: user.email || '',
-        phone: user.phone || '',
-        address: {
-          street: user.address?.street || '',
-          city: user.address?.city || '',
-          state: user.address?.state || '',
-          zipCode: user.address?.zipCode || '',
-        },
-      });
+      fetchOrderHistory();
     }
   }, [user]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (name.includes('.')) {
-      const [parent, child] = name.split('.');
-      setFormData((prev) => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent],
-          [child]: value,
-        },
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await dispatch(updateProfile(formData)).unwrap();
-      setIsEditing(false);
-    } catch (error) {
-      console.error('Failed to update profile:', error);
-    }
-  };
 
   if (!user) {
     return (
@@ -78,162 +48,129 @@ const Profile = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="bg-white shadow-md rounded-lg overflow-hidden">
-          <div className="p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h1 className="text-2xl font-bold text-gray-900">Profile</h1>
-              <button
-                onClick={() => setIsEditing(!isEditing)}
-                className="text-blue-600 hover:text-blue-800"
-              >
-                {isEditing ? 'Cancel' : 'Edit Profile'}
-              </button>
+      <div className="bg-white shadow rounded-lg overflow-hidden">
+        {/* Profile Header */}
+        <div className="bg-gradient-to-r from-blue-700 to-blue-900 px-6 py-8">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <div className="h-24 w-24 rounded-full bg-white flex items-center justify-center">
+                <span className="text-4xl font-bold text-blue-700">
+                  {user.name.charAt(0).toUpperCase()}
+                </span>
+              </div>
             </div>
+            <div className="ml-6">
+              <h1 className="text-3xl font-bold text-white">{user.name}</h1>
+              <p className="text-blue-100">{user.email}</p>
+            </div>
+          </div>
+        </div>
 
-            {isEditing ? (
-              <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Profile Content */}
+        <div className="px-6 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* User Information */}
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                <FaUser className="mr-2 text-blue-600" />
+                Personal Information
+              </h2>
+              <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
+                  <label className="block text-sm font-medium text-gray-600">Full Name</label>
+                  <p className="mt-1 text-lg text-gray-900">{user.name}</p>
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
+                  <label className="block text-sm font-medium text-gray-600">Email</label>
+                  <p className="mt-1 text-lg text-gray-900">{user.email}</p>
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Phone
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
+                  <label className="block text-sm font-medium text-gray-600">Phone</label>
+                  <p className="mt-1 text-lg text-gray-900">{user.phone || 'Not provided'}</p>
                 </div>
-
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Street Address
-                  </label>
-                  <input
-                    type="text"
-                    name="address.street"
-                    value={formData.address.street}
-                    onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      City
-                    </label>
-                    <input
-                      type="text"
-                      name="address.city"
-                      value={formData.address.city}
-                      onChange={handleChange}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      State
-                    </label>
-                    <input
-                      type="text"
-                      name="address.state"
-                      value={formData.address.state}
-                      onChange={handleChange}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    ZIP Code
-                  </label>
-                  <input
-                    type="text"
-                    name="address.zipCode"
-                    value={formData.address.zipCode}
-                    onChange={handleChange}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="flex justify-end">
-                  <button
-                    type="submit"
-                    className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-                  >
-                    Save Changes
-                  </button>
-                </div>
-              </form>
-            ) : (
-              <div className="space-y-6">
-                <div className="flex items-center">
-                  <FaUser className="h-5 w-5 text-gray-400 mr-3" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Name</p>
-                    <p className="text-lg text-gray-900">{user.name}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center">
-                  <FaEnvelope className="h-5 w-5 text-gray-400 mr-3" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Email</p>
-                    <p className="text-lg text-gray-900">{user.email}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center">
-                  <FaPhone className="h-5 w-5 text-gray-400 mr-3" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Phone</p>
-                    <p className="text-lg text-gray-900">{user.phone}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start">
-                  <FaMapMarkerAlt className="h-5 w-5 text-gray-400 mr-3 mt-1" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-500">Address</p>
-                    <p className="text-lg text-gray-900">
-                      {user.address?.street}
-                      <br />
-                      {user.address?.city}, {user.address?.state}{' '}
-                      {user.address?.zipCode}
-                    </p>
-                  </div>
+                  <label className="block text-sm font-medium text-gray-600">Address</label>
+                  <p className="mt-1 text-lg text-gray-900">
+                    {user.address ? (
+                      <>
+                        {user.address.street}
+                        <br />
+                        {user.address.city}, {user.address.state} {user.address.zipCode}
+                      </>
+                    ) : (
+                      'Not provided'
+                    )}
+                  </p>
                 </div>
               </div>
-            )}
+            </div>
+
+            {/* Order History */}
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                <FaHistory className="mr-2 text-blue-600" />
+                Order History
+              </h2>
+              {loading ? (
+                <div className="text-center py-4">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                  <p className="mt-2 text-gray-600">Loading order history...</p>
+                </div>
+              ) : error ? (
+                <div className="text-center py-4 text-red-600">
+                  {error}
+                </div>
+              ) : orderHistory.length === 0 ? (
+                <div className="text-center py-4 text-gray-600">
+                  No orders found
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {orderHistory.map((order) => (
+                    <div
+                      key={order._id}
+                      className="border rounded-lg p-4 hover:shadow-md transition-shadow duration-200"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900">
+                            Order #{order._id.slice(-6)}
+                          </h3>
+                          <p className="text-sm text-gray-600 flex items-center mt-1">
+                            <FaCalendarAlt className="mr-1" />
+                            {new Date(order.createdAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <span className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                          {order.status}
+                        </span>
+                      </div>
+                      <div className="mt-4">
+                        <h4 className="text-sm font-medium text-gray-600 mb-2 flex items-center">
+                          <FaPills className="mr-1" />
+                          Items
+                        </h4>
+                        <ul className="space-y-2">
+                          {order.items.map((item) => (
+                            <li key={item._id} className="text-sm text-gray-900">
+                              {item.medicine.name} x {item.quantity} - {formatPrice(item.price * item.quantity)}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="mt-4 pt-4 border-t border-gray-200">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium text-gray-600">Total</span>
+                          <span className="text-lg font-bold text-gray-900">
+                            {formatPrice(order.totalAmount)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

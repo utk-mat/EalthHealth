@@ -119,6 +119,7 @@ const token = localStorage.getItem('token') || null;
 const initialState = {
   user: user,
   token: token,
+  isAuthenticated: !!token,
   loading: false,
   error: null,
   allUsers: [],
@@ -131,6 +132,7 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
+      state.isAuthenticated = false;
       localStorage.removeItem('user');
       localStorage.removeItem('token');
       state.allUsers = [];
@@ -160,6 +162,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user;
         state.token = action.payload.token;
+        state.isAuthenticated = true;
         localStorage.setItem('user', JSON.stringify(action.payload.user));
         localStorage.setItem('token', action.payload.token);
       })
@@ -168,6 +171,7 @@ const authSlice = createSlice({
         state.error = action.payload;
         state.user = null;
         state.token = null;
+        state.isAuthenticated = false;
         localStorage.removeItem('user');
         localStorage.removeItem('token');
       })

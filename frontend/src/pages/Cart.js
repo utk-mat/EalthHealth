@@ -8,6 +8,7 @@ import {
   clearCart,
 } from '../store/slices/cartSlice';
 import { FaTrash, FaMinus, FaPlus } from 'react-icons/fa';
+import { formatPrice } from '../utils/currency';
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -148,7 +149,7 @@ const Cart = () => {
                           </button>
                         </div>
                         <p className="text-lg font-medium text-gray-900">
-                          ${(item.medicine.price * item.quantity).toFixed(2)}
+                          {formatPrice(item.medicine.price * item.quantity)}
                         </p>
                       </div>
                     </div>
@@ -167,7 +168,7 @@ const Cart = () => {
             <div className="space-y-4">
               <div className="flex justify-between text-sm">
                 <p className="text-gray-600">Subtotal</p>
-                <p className="font-medium text-gray-900">${total.toFixed(2)}</p>
+                <p className="font-medium text-gray-900">{formatPrice(total)}</p>
               </div>
               <div className="flex justify-between text-sm">
                 <p className="text-gray-600">Shipping</p>
@@ -176,7 +177,7 @@ const Cart = () => {
               <div className="border-t border-gray-200 pt-4">
                 <div className="flex justify-between text-base font-medium">
                   <p className="text-gray-900">Total</p>
-                  <p className="text-gray-900">${total.toFixed(2)}</p>
+                  <p className="text-gray-900">{formatPrice(total)}</p>
                 </div>
               </div>
             </div>

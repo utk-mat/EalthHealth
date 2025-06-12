@@ -10,7 +10,7 @@ import { CartProvider } from './context/CartContext';
 
 // Components
 import Navbar from './components/layout/Navbar';
-import MedicineList from './components/MedicineList';
+import MedicineList from './pages/MedicineList';
 import MedicineDetail from './components/MedicineDetail';
 import Cart from './components/Cart';
 
@@ -20,6 +20,13 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Orders from './pages/Orders';
 import Profile from './pages/Profile';
+import Contact from './pages/Contact';
+import AboutUs from './pages/AboutUs';
+import FAQ from './pages/FAQ';
+import ShippingDelivery from './pages/ShippingDelivery';
+import ReturnsExchange from './pages/ReturnsExchange';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import Checkout from './pages/Checkout';
 
 // Admin Pages
 import AdminDashboard from './pages/AdminDashboard';
@@ -61,14 +68,10 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/cart" element={<Cart />} />
-                <Route
-                  path="/medicines"
-                  element={
-                    <ProtectedRoute>
-                      <MedicineList />
-                    </ProtectedRoute>
-                  }
-                />
+                <Route path="/medicines" element={<MedicineList />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/about" element={<AboutUs />} />
+                <Route path="/checkout" element={<Checkout />} />
                 <Route
                   path="/medicines/:id"
                   element={
@@ -117,6 +120,12 @@ function App() {
                     <PrivateRoute element={AdminUsers} adminOnly />
                   }
                 />
+
+                {/* New Pages */}
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/shipping-delivery" element={<ShippingDelivery />} />
+                <Route path="/returns-exchange" element={<ReturnsExchange />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               </Routes>
             </Layout>
           </Router>

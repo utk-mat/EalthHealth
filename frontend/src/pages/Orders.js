@@ -2,11 +2,83 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchUserOrders } from '../store/slices/orderSlice';
 import { FaBox, FaTruck, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { formatPrice } from '../utils/currency';
 
 const Orders = () => {
   const dispatch = useDispatch();
-  const { orders, loading } = useSelector((state) => state.order);
+  const { orders: realOrders, loading } = useSelector((state) => state.order);
   const { user } = useSelector((state) => state.auth);
+
+  // Dummy data for demonstration
+  const dummyOrders = [
+    {
+      _id: 'ORDER-001',
+      createdAt: '2023-10-26T10:00:00Z',
+      status: 'Delivered',
+      totalAmount: 1250.50,
+      shippingAddress: {
+        street: '123 Health Ave',
+        city: 'Wellness City',
+        state: 'MH',
+        zipCode: '400001',
+      },
+      items: [
+        {
+          _id: 'ITEM-001',
+          medicine: {
+            imageUrl: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80',
+            name: 'Pain Relief Tablet',
+          },
+          quantity: 2,
+          price: 150.00,
+        },
+        {
+          _id: 'ITEM-002',
+          medicine: {
+            imageUrl: 'https://images.unsplash.com/photo-1590480398031-ac0705a3962b?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80',
+            name: 'Vitamin C 1000mg',
+          },
+          quantity: 1,
+          price: 950.50,
+        },
+      ],
+    },
+    {
+      _id: 'ORDER-002',
+      createdAt: '2023-11-15T14:30:00Z',
+      status: 'Processing',
+      totalAmount: 520.00,
+      shippingAddress: {
+        street: '456 Pharmacy St',
+        city: 'Medi Town',
+        state: 'DL',
+        zipCode: '110001',
+      },
+      items: [
+        {
+          _id: 'ITEM-003',
+          medicine: {
+            imageUrl: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80',
+            name: 'Antiseptic Liquid',
+          },
+          quantity: 1,
+          price: 220.00,
+        },
+        {
+          _id: 'ITEM-004',
+          medicine: {
+            imageUrl: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80',
+            name: 'Cough Syrup',
+          },
+          quantity: 1,
+          price: 300.00,
+        },
+      ],
+    },
+  ];
+
+  // Use real orders if available, otherwise use dummy orders for demo
+  const orders = realOrders && realOrders.length > 0 ? realOrders : dummyOrders;
 
   useEffect(() => {
     if (user) {
@@ -144,7 +216,7 @@ const Orders = () => {
                         </p>
                       </div>
                       <div className="text-sm font-medium text-gray-900">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        {formatPrice(item.price * item.quantity)}
                       </div>
                     </div>
                   ))}
@@ -165,7 +237,7 @@ const Orders = () => {
                   <div className="text-right">
                     <p className="text-sm text-gray-500">Total Amount</p>
                     <p className="text-lg font-semibold text-gray-900">
-                      ${order.totalAmount.toFixed(2)}
+                      {formatPrice(order.totalAmount)}
                     </p>
                   </div>
                 </div>

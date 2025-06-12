@@ -22,10 +22,6 @@ const Navbar = () => {
 
   let userName = 'Guest';
   let userInitial = 'G';
-  if (isAuthenticated && user && user.name) {
-    userName = user.name.split(' ')[0]; // Get first name
-    userInitial = user.name.charAt(0).toUpperCase();
-  }
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -102,7 +98,23 @@ const Navbar = () => {
                 </span>
               )}
             </Link>
-            {isAuthenticated ? (
+            {/* Conditional rendering based on isAuthenticated state */}
+            {!isAuthenticated ? ( // This block is for users NOT logged in
+              <div className="flex items-center space-x-4">
+                <Link
+                  to="/login"
+                  className="text-white hover:text-blue-200 transition duration-150 ease-in-out flex items-center"
+                >
+                  <span className="mr-1">Login</span>
+                </Link>
+                <Link
+                  to="/register"
+                  className="text-white hover:text-blue-200 transition duration-150 ease-in-out flex items-center"
+                >
+                  <span className="mr-1">Register</span>
+                </Link>
+              </div>
+            ) : ( // This block is for users WHO ARE logged in
               <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
                 <Typography variant="body1" sx={{ mr: 1, color: 'inherit' }}>
                   Hi, {userName}
@@ -137,23 +149,6 @@ const Navbar = () => {
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
               </Box>
-            ) : (
-              <div className="flex items-center space-x-4">
-                <Link
-                  to="/login"
-                  className="text-white hover:text-blue-200 transition duration-150 ease-in-out flex items-center"
-                >
-                  <span className="mr-1">Login</span>
-                  {/* <FaSignInAlt className="h-7 w-7 mr-1" /> */}
-                </Link>
-                <Link
-                  to="/register"
-                  className="text-white hover:text-blue-200 transition duration-150 ease-in-out flex items-center"
-                >
-                  <span className="mr-1">Register</span>
-                  {/* <FaUserPlus className="h-7 w-7 mr-1" /> */}
-                </Link>
-              </div>
             )}
           </div>
         </div>
@@ -162,4 +157,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar; 
+export default Navbar;

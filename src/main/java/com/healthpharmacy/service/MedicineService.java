@@ -56,4 +56,37 @@ public class MedicineService {
         medicine.setStock(medicine.getStock() + quantity);
         medicineRepository.save(medicine);
     }
+
+    public List<Medicine> getFeaturedMedicines() {
+        // For simplicity, return the first 8 medicines as featured
+        List<Medicine> allMedicines = medicineRepository.findAll();
+        return allMedicines.subList(0, Math.min(8, allMedicines.size()));
+    }
+
+    public List<Medicine> getSortedMedicines(String sortBy, String sortDirection) {
+        List<Medicine> medicines = medicineRepository.findAll();
+        
+        switch (sortBy.toLowerCase()) {
+            case "name":
+                medicines.sort((m1, m2) -> sortDirection.equalsIgnoreCase("asc") 
+                    ? m1.getName().compareTo(m2.getName())
+                    : m2.getName().compareTo(m1.getName()));
+                break;
+            case "price":
+                medicines.sort((m1, m2) -> sortDirection.equalsIgnoreCase("asc")
+                    ? m1.getPrice().compareTo(m2.getPrice())
+                    : m2.getPrice().compareTo(m1.getPrice()));
+                break;
+            case "category":
+                medicines.sort((m1, m2) -> sortDirection.equalsIgnoreCase("asc")
+                    ? m1.getCategory().compareTo(m2.getCategory())
+                    : m2.getCategory().compareTo(m1.getCategory()));
+                break;
+            default:
+                // Default sort by name ascending
+                medicines.sort((m1, m2) -> m1.getName().compareTo(m2.getName()));
+        }
+        
+        return medicines;
+    }
 } 

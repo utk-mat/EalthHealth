@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/cart")
+@CrossOrigin(origins = "http://localhost:3000")
 public class CartController {
 
     private static final Logger logger = LoggerFactory.getLogger(CartController.class);
@@ -21,44 +22,44 @@ public class CartController {
     @GetMapping
     public ResponseEntity<Cart> getCart(Authentication authentication) {
         String userId = authentication.getName();
-        logger.info("Attempting to get cart for user: {}", userId);
-        Cart cart = cartService.getOrCreateCart(userId);
+        logger.info("Fetching cart for user: {}", userId);
+        Cart cart = cartService.getCart(userId);
         return ResponseEntity.ok(cart);
     }
 
-    @PostMapping("/add")
+    @PostMapping("/items")
     public ResponseEntity<Cart> addToCart(
             Authentication authentication,
             @RequestParam String medicineId,
             @RequestParam(defaultValue = "1") int quantity) {
         String userId = authentication.getName();
         logger.info("Adding medicine {} (quantity: {}) to cart for user: {}", medicineId, quantity, userId);
-        Cart cart = cartService.addToCart(userId, medicineId, quantity);
+        Cart cart = cartService.addItemToCart(userId, medicineId, quantity);
         return ResponseEntity.ok(cart);
     }
 
-    @PutMapping("/update")
+    @PutMapping("/items")
     public ResponseEntity<Cart> updateCartItemQuantity(
             Authentication authentication,
             @RequestParam String medicineId,
             @RequestParam int quantity) {
         String userId = authentication.getName();
         logger.info("Updating quantity of medicine {} to {} for user: {}", medicineId, quantity, userId);
-        Cart cart = cartService.updateCartItemQuantity(userId, medicineId, quantity);
+        Cart cart = cartService.updateItemQuantity(userId, medicineId, quantity);
         return ResponseEntity.ok(cart);
     }
 
-    @DeleteMapping("/remove")
+    @DeleteMapping("/items/{medicineId}")
     public ResponseEntity<Cart> removeFromCart(
             Authentication authentication,
-            @RequestParam String medicineId) {
+            @PathVariable String medicineId) {
         String userId = authentication.getName();
         logger.info("Removing medicine {} from cart for user: {}", medicineId, userId);
-        Cart cart = cartService.removeFromCart(userId, medicineId);
+        Cart cart = cartService.removeItemFromCart(userId, medicineId);
         return ResponseEntity.ok(cart);
     }
 
-    @DeleteMapping("/clear")
+    @DeleteMapping
     public ResponseEntity<Void> clearCart(Authentication authentication) {
         String userId = authentication.getName();
         logger.info("Clearing cart for user: {}", userId);

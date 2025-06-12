@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { createOrder } from '../store/slices/orderSlice';
 import { clearCart } from '../store/slices/cartSlice';
 import { FaLock, FaCreditCard, FaPaypal } from 'react-icons/fa';
+import { formatPrice } from '../utils/currency';
 
 const Checkout = () => {
   const dispatch = useDispatch();
@@ -104,13 +105,13 @@ const Checkout = () => {
                     value="credit"
                     checked={paymentMethod === 'credit'}
                     onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                    className="h-4 w-4 text-primary focus:ring-primary"
                   />
                   <label
                     htmlFor="credit"
                     className="ml-3 flex items-center text-gray-700"
                   >
-                    <FaCreditCard className="h-5 w-5 mr-2" />
+                    <FaCreditCard className="h-5 w-5 mr-2 text-primary" />
                     Credit Card
                   </label>
                 </div>
@@ -122,17 +123,41 @@ const Checkout = () => {
                     value="paypal"
                     checked={paymentMethod === 'paypal'}
                     onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                    className="h-4 w-4 text-primary focus:ring-primary"
                   />
                   <label
                     htmlFor="paypal"
                     className="ml-3 flex items-center text-gray-700"
                   >
-                    <FaPaypal className="h-5 w-5 mr-2" />
+                    <FaPaypal className="h-5 w-5 mr-2 text-primary" />
                     PayPal
                   </label>
                 </div>
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    id="upi"
+                    name="paymentMethod"
+                    value="upi"
+                    checked={paymentMethod === 'upi'}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className="h-4 w-4 text-primary focus:ring-primary"
+                  />
+                  <label
+                    htmlFor="upi"
+                    className="ml-3 flex items-center text-gray-700"
+                  >
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-Vector.svg" alt="UPI" className="h-5 w-5 mr-2" />
+                    UPI / NetBanking
+                  </label>
+                </div>
               </div>
+            </div>
+
+            {/* Payment Gateway Simulation */}
+            <div className="bg-blue-50 border-l-4 border-blue-400 p-4 text-blue-800 rounded-md">
+              <p className="font-semibold">Payment Gateway Simulation:</p>
+              <p className="text-sm">For demo purposes, all orders will be processed as 'Credit Card' and marked as 'Pending'. No real payment is processed.</p>
             </div>
 
             {error && (
@@ -144,7 +169,7 @@ const Checkout = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-primary text-white py-3 px-4 rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <span className="flex items-center justify-center">
@@ -178,6 +203,15 @@ const Checkout = () => {
               )}
             </button>
           </form>
+          
+          {/* Secure Checkout Guarantee */}
+          <div className="mt-8 text-center text-gray-600 text-sm">
+            <p className="flex items-center justify-center">
+              <FaLock className="mr-2 text-green-500" />
+              Your information is 100% secure with our encrypted checkout.
+            </p>
+          </div>
+
         </div>
 
         {/* Order Summary */}
@@ -203,7 +237,7 @@ const Checkout = () => {
                         Quantity: {item.quantity}
                       </p>
                       <p className="mt-1 text-sm font-medium text-gray-900">
-                        ${(item.medicine.price * item.quantity).toFixed(2)}
+                        {formatPrice(item.medicine.price * item.quantity)}
                       </p>
                     </div>
                   </li>
@@ -213,7 +247,7 @@ const Checkout = () => {
             <div className="mt-6 space-y-4">
               <div className="flex justify-between text-sm">
                 <p className="text-gray-600">Subtotal</p>
-                <p className="font-medium text-gray-900">${total.toFixed(2)}</p>
+                <p className="font-medium text-gray-900">{formatPrice(total)}</p>
               </div>
               <div className="flex justify-between text-sm">
                 <p className="text-gray-600">Shipping</p>
@@ -222,7 +256,7 @@ const Checkout = () => {
               <div className="border-t border-gray-200 pt-4">
                 <div className="flex justify-between text-base font-medium">
                   <p className="text-gray-900">Total</p>
-                  <p className="text-gray-900">${total.toFixed(2)}</p>
+                  <p className="text-gray-900">{formatPrice(total)}</p>
                 </div>
               </div>
             </div>

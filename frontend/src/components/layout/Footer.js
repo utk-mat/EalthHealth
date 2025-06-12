@@ -49,17 +49,17 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/shipping" className="text-gray-300 hover:text-blue-400 transition duration-200 ease-in-out">
+                <Link to="/shipping-delivery" className="text-gray-300 hover:text-blue-400 transition duration-200 ease-in-out">
                   Shipping & Delivery
                 </Link>
               </li>
               <li>
-                <Link to="/returns" className="text-gray-300 hover:text-blue-400 transition duration-200 ease-in-out">
+                <Link to="/returns-exchange" className="text-gray-300 hover:text-blue-400 transition duration-200 ease-in-out">
                   Returns & Exchanges
                 </Link>
               </li>
               <li>
-                <Link to="/privacy" className="text-gray-300 hover:text-blue-400 transition duration-200 ease-in-out">
+                <Link to="/privacy-policy" className="text-gray-300 hover:text-blue-400 transition duration-200 ease-in-out">
                   Privacy Policy
                 </Link>
               </li>

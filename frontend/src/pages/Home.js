@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFeaturedMedicines } from '../store/slices/medicineSlice';
 import { FaArrowRight, FaTruck, FaShieldAlt, FaHeadset } from 'react-icons/fa';
+import { formatPrice } from '../utils/currency';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -95,7 +96,7 @@ const Home = () => {
                     <p className="text-gray-700 text-base mb-4 line-clamp-3">{medicine.description}</p>
                     <div className="flex justify-between items-center mt-auto pt-3 border-t border-gray-100">
                       <span className="text-2xl font-extrabold text-blue-700">
-                        ${medicine.price.toFixed(2)}
+                        {formatPrice(medicine.price)}
                       </span>
                       <Link
                         to={`/medicines/${medicine._id}`}

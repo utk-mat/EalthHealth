@@ -13,6 +13,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
+import { formatPrice } from '../utils/currency';
 
 const Cart = () => {
   const { cart, removeFromCart, updateQuantity, getCartTotal, clearCart } = useCart();
@@ -75,7 +76,7 @@ const Cart = () => {
                       {item.dosageForm} - {item.strength}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      ${item.price} each
+                      {formatPrice(item.price)} each
                     </Typography>
                   </Grid>
                   <Grid item xs={12} sm={3}>
@@ -92,7 +93,7 @@ const Cart = () => {
                   <Grid item xs={12} sm={2}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                       <Typography variant="h6" color="primary">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        {formatPrice(item.price * item.quantity)}
                       </Typography>
                       <IconButton
                         color="error"
@@ -121,7 +122,9 @@ const Cart = () => {
                   <Typography>Subtotal</Typography>
                 </Grid>
                 <Grid item>
-                  <Typography>${getCartTotal().toFixed(2)}</Typography>
+                  <Typography>
+                    {formatPrice(getCartTotal())}
+                  </Typography>
                 </Grid>
               </Grid>
             </Box>
@@ -133,7 +136,7 @@ const Cart = () => {
                 </Grid>
                 <Grid item>
                   <Typography variant="h6" color="primary">
-                    ${getCartTotal().toFixed(2)}
+                    {formatPrice(getCartTotal())}
                   </Typography>
                 </Grid>
               </Grid>

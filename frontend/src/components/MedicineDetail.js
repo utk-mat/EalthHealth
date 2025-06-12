@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useCart } from '../context/CartContext';
+import { formatPrice } from '../utils/currency';
 
 const MedicineDetail = () => {
   const { id } = useParams();
@@ -156,7 +157,7 @@ const MedicineDetail = () => {
             </Box>
 
             <Typography variant="h5" color="primary" sx={{ mb: 3 }}>
-              ${medicine.price}
+              {formatPrice(medicine.price)}
             </Typography>
 
             <Typography variant="body1" paragraph>
