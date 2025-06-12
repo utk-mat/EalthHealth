@@ -40,7 +40,7 @@ A full-stack web application for managing medicine supply in tier-2 cities. Buil
 
 1. Clone the repository
 2. Configure MySQL database
-   - Create a database named `health_pharmacy`
+   - Create a database named `healthpharmacy`
    - Update database credentials in `application.properties`
 
 3. Build and run the backend
