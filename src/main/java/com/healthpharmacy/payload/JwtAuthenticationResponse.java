@@ -3,9 +3,11 @@ package com.healthpharmacy.payload;
 public class JwtAuthenticationResponse {
     private String accessToken;
     private String tokenType = "Bearer";
+    private UserResponse user;
 
-    public JwtAuthenticationResponse(String accessToken) {
+    public JwtAuthenticationResponse(String accessToken, UserResponse user) {
         this.accessToken = accessToken;
+        this.user = user;
     }
 
     public String getAccessToken() {
@@ -22,5 +24,13 @@ public class JwtAuthenticationResponse {
 
     public void setTokenType(String tokenType) {
         this.tokenType = tokenType;
+    }
+
+    public UserResponse getUser() {
+        return user;
+    }
+
+    public void setUser(UserResponse user) {
+        this.user = user;
     }
 } 

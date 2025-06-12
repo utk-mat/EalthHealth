@@ -3,7 +3,9 @@ package com.healthpharmacy.controller;
 import com.healthpharmacy.entity.User;
 import com.healthpharmacy.payload.JwtAuthenticationResponse;
 import com.healthpharmacy.payload.LoginRequest;
+import com.healthpharmacy.payload.UserResponse;
 import com.healthpharmacy.security.JwtTokenProvider;
+import com.healthpharmacy.security.UserPrincipal;
 import com.healthpharmacy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +41,11 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.generateToken(authentication);
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        User user = userService.getUserById(userPrincipal.getId());
+        UserResponse userResponse = new UserResponse(user);
+
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, userResponse));
     }
 
     @PostMapping("/register")

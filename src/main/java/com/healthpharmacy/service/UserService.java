@@ -42,6 +42,11 @@ public class UserService implements UserDetailsService {
         );
     }
 
+    public User getUserById(String id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
+    }
+
     public User registerUser(User user) {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already exists");
