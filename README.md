@@ -11,7 +11,7 @@ A full-stack web application for managing medicine supply in tier-2 cities. Buil
 - Prescription Management
 - Admin Dashboard
 - Order Tracking
-- Stock Management
+
 
 ## Tech Stack
 
