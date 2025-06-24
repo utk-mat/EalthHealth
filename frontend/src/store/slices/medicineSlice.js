@@ -12,7 +12,7 @@ export const fetchMedicines = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
 export const fetchMedicineById = createAsyncThunk(
@@ -24,31 +24,35 @@ export const fetchMedicineById = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
 export const fetchMedicinesByCategory = createAsyncThunk(
   'medicine/fetchMedicinesByCategory',
   async (category, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_URL}/medicines/category/${category}`);
+      const response = await axios.get(
+        `${API_URL}/medicines/category/${category}`,
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
 export const searchMedicines = createAsyncThunk(
   'medicine/searchMedicines',
   async (query, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${API_URL}/medicines/search?q=${query}`);
+      const response = await axios.get(
+        `${API_URL}/medicines/search?q=${query}`,
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
 export const fetchFeaturedMedicines = createAsyncThunk(
@@ -60,7 +64,7 @@ export const fetchFeaturedMedicines = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
 const initialState = {
@@ -83,7 +87,9 @@ const medicineSlice = createSlice({
       state.currentMedicine = action.payload;
     },
     updateMedicine: (state, action) => {
-      const index = state.medicines.findIndex(medicine => medicine.id === action.payload.id);
+      const index = state.medicines.findIndex(
+        (medicine) => medicine.id === action.payload.id,
+      );
       if (index !== -1) {
         state.medicines[index] = action.payload;
       }
@@ -92,7 +98,9 @@ const medicineSlice = createSlice({
       state.medicines.push(action.payload);
     },
     deleteMedicine: (state, action) => {
-      state.medicines = state.medicines.filter(medicine => medicine.id !== action.payload);
+      state.medicines = state.medicines.filter(
+        (medicine) => medicine.id !== action.payload,
+      );
     },
   },
   extraReducers: (builder) => {
@@ -167,6 +175,6 @@ export const {
   setCurrentMedicine,
   updateMedicine,
   createMedicine,
-  deleteMedicine
+  deleteMedicine,
 } = medicineSlice.actions;
-export default medicineSlice.reducer; 
+export default medicineSlice.reducer;

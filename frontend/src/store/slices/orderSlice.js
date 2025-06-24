@@ -13,7 +13,7 @@ export const fetchUserOrders = createAsyncThunk(
       },
     });
     return response.data;
-  }
+  },
 );
 
 export const createOrder = createAsyncThunk(
@@ -26,7 +26,7 @@ export const createOrder = createAsyncThunk(
       },
     });
     return response.data;
-  }
+  },
 );
 
 export const cancelOrder = createAsyncThunk(
@@ -40,10 +40,10 @@ export const cancelOrder = createAsyncThunk(
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
-      }
+      },
     );
     return response.data;
-  }
+  },
 );
 
 const initialState = {
@@ -69,7 +69,9 @@ const orderSlice = createSlice({
       state.error = null;
     },
     updateOrderStatus: (state, action) => {
-      const index = state.orders.findIndex(order => order._id === action.payload._id);
+      const index = state.orders.findIndex(
+        (order) => order._id === action.payload._id,
+      );
       if (index !== -1) {
         state.orders[index] = action.payload;
       }
@@ -109,7 +111,7 @@ const orderSlice = createSlice({
       .addCase(cancelOrder.fulfilled, (state, action) => {
         state.loading = false;
         const index = state.orders.findIndex(
-          (order) => order._id === action.payload._id
+          (order) => order._id === action.payload._id,
         );
         if (index !== -1) {
           state.orders[index] = action.payload;
@@ -126,7 +128,7 @@ export const {
   clearOrderError,
   setCurrentOrder,
   fetchOrders,
-  updateOrderStatus
+  updateOrderStatus,
 } = orderSlice.actions;
 
-export default orderSlice.reducer; 
+export default orderSlice.reducer;

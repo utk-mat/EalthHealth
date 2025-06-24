@@ -48,7 +48,12 @@ const MedicineList = () => {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="60vh"
+      >
         <CircularProgress />
       </Box>
     );
@@ -56,7 +61,12 @@ const MedicineList = () => {
 
   if (error) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="60vh"
+      >
         <Typography color="error">{error}</Typography>
       </Box>
     );
@@ -82,15 +92,15 @@ const MedicineList = () => {
                 <Typography gutterBottom variant="h6" component="h2">
                   {medicine.name}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mb: 2 }}
+                >
                   {medicine.description}
                 </Typography>
                 <Box sx={{ mb: 2 }}>
-                  <Chip
-                    label={medicine.category}
-                    size="small"
-                    sx={{ mr: 1 }}
-                  />
+                  <Chip label={medicine.category} size="small" sx={{ mr: 1 }} />
                   {medicine.requiresPrescription && (
                     <Chip
                       label="Prescription Required"
@@ -119,4 +129,4 @@ const MedicineList = () => {
   );
 };
 
-export default MedicineList; 
+export default MedicineList;

@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchMedicines, createMedicine, updateMedicine, deleteMedicine } from '../store/slices/medicineSlice';
+import {
+  fetchMedicines,
+  createMedicine,
+  updateMedicine,
+  deleteMedicine,
+} from '../store/slices/medicineSlice';
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaTimes } from 'react-icons/fa';
 import useForm from '../hooks/useForm';
 import useSearch from '../hooks/useSearch';
@@ -12,8 +17,23 @@ const AdminMedicines = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentMedicine, setCurrentMedicine] = useState(null);
 
-  const { searchTerm, handleSearch, filteredItems, handleFilter, clearSearch, clearFilters } = useSearch(medicines, ['name', 'category', 'description']);
-  const { paginatedItems, currentPage, totalPages, goToPage, nextPage, previousPage, getPageNumbers } = usePagination(filteredItems, 10);
+  const {
+    searchTerm,
+    handleSearch,
+    filteredItems,
+    handleFilter,
+    clearSearch,
+    clearFilters,
+  } = useSearch(medicines, ['name', 'category', 'description']);
+  const {
+    paginatedItems,
+    currentPage,
+    totalPages,
+    goToPage,
+    nextPage,
+    previousPage,
+    getPageNumbers,
+  } = usePagination(filteredItems, 10);
 
   const initialFormValues = {
     name: '',
@@ -29,16 +49,21 @@ const AdminMedicines = () => {
     const errors = {};
     if (!values.name) errors.name = 'Name is required';
     if (!values.description) errors.description = 'Description is required';
-    if (!values.price || values.price <= 0) errors.price = 'Price must be a positive number';
+    if (!values.price || values.price <= 0)
+      errors.price = 'Price must be a positive number';
     if (!values.category) errors.category = 'Category is required';
     if (!values.imageUrl) errors.imageUrl = 'Image URL is required';
     return errors;
   };
 
-  const { values, handleChange, handleSubmit, errors, resetForm, setFieldValue } = useForm(
-    initialFormValues,
-    validateForm
-  );
+  const {
+    values,
+    handleChange,
+    handleSubmit,
+    errors,
+    resetForm,
+    setFieldValue,
+  } = useForm(initialFormValues, validateForm);
 
   useEffect(() => {
     dispatch(fetchMedicines());
@@ -70,7 +95,9 @@ const AdminMedicines = () => {
 
   const onSubmitForm = async () => {
     if (currentMedicine) {
-      await dispatch(updateMedicine({ id: currentMedicine._id, medicineData: values }));
+      await dispatch(
+        updateMedicine({ id: currentMedicine._id, medicineData: values }),
+      );
     } else {
       await dispatch(createMedicine(values));
     }
@@ -87,7 +114,9 @@ const AdminMedicines = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Manage Medicines</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-8">
+        Manage Medicines
+      </h1>
 
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center w-full max-w-md">
@@ -133,20 +162,38 @@ const AdminMedicines = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prescription</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Image
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Name
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Category
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Price
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Stock
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Prescription
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {paginatedItems.map((medicine) => (
                 <tr key={medicine._id}>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <img src={medicine.imageUrl} alt={medicine.name} className="h-12 w-12 object-cover rounded-md" />
+                    <img
+                      src={medicine.imageUrl}
+                      alt={medicine.name}
+                      className="h-12 w-12 object-cover rounded-md"
+                    />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {medicine.name}
@@ -158,12 +205,24 @@ const AdminMedicines = () => {
                     ${medicine.price.toFixed(2)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${medicine.inStock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                    <span
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        medicine.inStock
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-red-100 text-red-800'
+                      }`}
+                    >
                       {medicine.inStock ? 'In Stock' : 'Out of Stock'}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${medicine.requiresPrescription ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'}`}>
+                    <span
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        medicine.requiresPrescription
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : 'bg-gray-100 text-gray-800'
+                      }`}
+                    >
                       {medicine.requiresPrescription ? 'Yes' : 'No'}
                     </span>
                   </td>
@@ -194,8 +253,16 @@ const AdminMedicines = () => {
             >
               <div className="hidden sm:block">
                 <p className="text-sm text-gray-700">
-                  Showing <span className="font-medium">{(currentPage - 1) * 10 + 1}</span> to <span className="font-medium">{Math.min(currentPage * 10, filteredItems.length)}</span> of{' '}
-                  <span className="font-medium">{filteredItems.length}</span> results
+                  Showing{' '}
+                  <span className="font-medium">
+                    {(currentPage - 1) * 10 + 1}
+                  </span>{' '}
+                  to{' '}
+                  <span className="font-medium">
+                    {Math.min(currentPage * 10, filteredItems.length)}
+                  </span>{' '}
+                  of <span className="font-medium">{filteredItems.length}</span>{' '}
+                  results
                 </p>
               </div>
               <div className="flex-1 flex justify-between sm:justify-end">
@@ -211,7 +278,11 @@ const AdminMedicines = () => {
                     <button
                       key={page}
                       onClick={() => goToPage(page)}
-                      className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${currentPage === page ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                      className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
+                        currentPage === page
+                          ? 'bg-blue-600 text-white hover:bg-blue-700'
+                          : 'bg-white text-gray-700 hover:bg-gray-50'
+                      }`}
                     >
                       {page}
                     </button>
@@ -239,7 +310,12 @@ const AdminMedicines = () => {
             </h2>
             <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Name
+                </label>
                 <input
                   type="text"
                   id="name"
@@ -248,10 +324,17 @@ const AdminMedicines = () => {
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
-                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                {errors.name && (
+                  <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+                )}
               </div>
               <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
+                <label
+                  htmlFor="description"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Description
+                </label>
                 <textarea
                   id="description"
                   name="description"
@@ -260,10 +343,19 @@ const AdminMedicines = () => {
                   rows="3"
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 ></textarea>
-                {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
+                {errors.description && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.description}
+                  </p>
+                )}
               </div>
               <div>
-                <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price</label>
+                <label
+                  htmlFor="price"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Price
+                </label>
                 <input
                   type="number"
                   id="price"
@@ -273,10 +365,17 @@ const AdminMedicines = () => {
                   step="0.01"
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
-                {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price}</p>}
+                {errors.price && (
+                  <p className="text-red-500 text-xs mt-1">{errors.price}</p>
+                )}
               </div>
               <div>
-                <label htmlFor="category" className="block text-sm font-medium text-gray-700">Category</label>
+                <label
+                  htmlFor="category"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Category
+                </label>
                 <input
                   type="text"
                   id="category"
@@ -285,10 +384,17 @@ const AdminMedicines = () => {
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
-                {errors.category && <p className="text-red-500 text-xs mt-1">{errors.category}</p>}
+                {errors.category && (
+                  <p className="text-red-500 text-xs mt-1">{errors.category}</p>
+                )}
               </div>
               <div>
-                <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700">Image URL</label>
+                <label
+                  htmlFor="imageUrl"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Image URL
+                </label>
                 <input
                   type="text"
                   id="imageUrl"
@@ -297,7 +403,9 @@ const AdminMedicines = () => {
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
-                {errors.imageUrl && <p className="text-red-500 text-xs mt-1">{errors.imageUrl}</p>}
+                {errors.imageUrl && (
+                  <p className="text-red-500 text-xs mt-1">{errors.imageUrl}</p>
+                )}
               </div>
               <div className="flex items-center mt-4">
                 <input
@@ -308,7 +416,12 @@ const AdminMedicines = () => {
                   onChange={handleChange}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
-                <label htmlFor="inStock" className="ml-2 block text-sm text-gray-900">In Stock</label>
+                <label
+                  htmlFor="inStock"
+                  className="ml-2 block text-sm text-gray-900"
+                >
+                  In Stock
+                </label>
               </div>
               <div className="flex items-center mt-4">
                 <input
@@ -319,7 +432,12 @@ const AdminMedicines = () => {
                   onChange={handleChange}
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
-                <label htmlFor="requiresPrescription" className="ml-2 block text-sm text-gray-900">Requires Prescription</label>
+                <label
+                  htmlFor="requiresPrescription"
+                  className="ml-2 block text-sm text-gray-900"
+                >
+                  Requires Prescription
+                </label>
               </div>
               <div className="flex justify-end space-x-4 mt-6">
                 <button
@@ -344,4 +462,4 @@ const AdminMedicines = () => {
   );
 };
 
-export default AdminMedicines; 
+export default AdminMedicines;

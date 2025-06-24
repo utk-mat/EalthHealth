@@ -41,7 +41,7 @@ const useForm = (initialValues = {}, validate = () => ({})) => {
 
       setIsSubmitting(false);
     },
-    [values, validate]
+    [values, validate],
   );
 
   const resetForm = useCallback(() => {
@@ -79,4 +79,4 @@ const useForm = (initialValues = {}, validate = () => ({})) => {
   };
 };
 
-export default useForm; 
+export default useForm;

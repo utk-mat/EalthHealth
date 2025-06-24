@@ -29,14 +29,22 @@ const AdminOrders = () => {
 
   const { searchTerm, handleSearch, filteredItems, clearSearch } = useSearch(
     orders,
-    ['_id', 'userId', 'totalAmount', 'status']
+    ['_id', 'userId', 'totalAmount', 'status'],
   );
 
   const filteredByStatus = statusFilter
     ? filteredItems.filter((order) => order.status === statusFilter)
     : filteredItems;
 
-  const { paginatedItems, currentPage, totalPages, goToPage, nextPage, previousPage, getPageNumbers } = usePagination(filteredByStatus, 10);
+  const {
+    paginatedItems,
+    currentPage,
+    totalPages,
+    goToPage,
+    nextPage,
+    previousPage,
+    getPageNumbers,
+  } = usePagination(filteredByStatus, 10);
 
   useEffect(() => {
     dispatch(fetchOrders());
@@ -55,7 +63,7 @@ const AdminOrders = () => {
   const handleUpdateStatus = async (orderId, newStatus) => {
     if (
       window.confirm(
-        `Are you sure you want to change order status to ${newStatus}?`
+        `Are you sure you want to change order status to ${newStatus}?`,
       )
     ) {
       await dispatch(updateOrderStatus({ orderId, status: newStatus }));
@@ -155,12 +163,24 @@ const AdminOrders = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Amount</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Order ID
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  User ID
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Total Amount
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Order Date
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -176,9 +196,14 @@ const AdminOrders = () => {
                     ${order.totalAmount.toFixed(2)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(order.status)}`}>
+                    <span
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
+                        order.status,
+                      )}`}
+                    >
                       <span className="flex items-center">
-                        {getStatusIcon(order.status)}<span className="ml-1">{order.status}</span>
+                        {getStatusIcon(order.status)}
+                        <span className="ml-1">{order.status}</span>
                       </span>
                     </span>
                   </td>
@@ -193,11 +218,15 @@ const AdminOrders = () => {
                       <FaEye className="inline-block mr-1" /> View
                     </button>
                     <select
-                      onChange={(e) => handleUpdateStatus(order._id, e.target.value)}
+                      onChange={(e) =>
+                        handleUpdateStatus(order._id, e.target.value)
+                      }
                       defaultValue=""
                       className="ml-2 p-1 border border-gray-300 rounded-md text-sm"
                     >
-                      <option value="" disabled>Update Status</option>
+                      <option value="" disabled>
+                        Update Status
+                      </option>
                       <option value="PENDING">Pending</option>
                       <option value="PROCESSING">Processing</option>
                       <option value="SHIPPED">Shipped</option>
@@ -225,7 +254,17 @@ const AdminOrders = () => {
             >
               <div className="hidden sm:block">
                 <p className="text-sm text-gray-700">
-                  Showing <span className="font-medium">{(currentPage - 1) * 10 + 1}</span> to <span className="font-medium">{Math.min(currentPage * 10, filteredByStatus.length)}</span> of <span className="font-medium">{filteredByStatus.length}</span> results
+                  Showing{' '}
+                  <span className="font-medium">
+                    {(currentPage - 1) * 10 + 1}
+                  </span>{' '}
+                  to{' '}
+                  <span className="font-medium">
+                    {Math.min(currentPage * 10, filteredByStatus.length)}
+                  </span>{' '}
+                  of{' '}
+                  <span className="font-medium">{filteredByStatus.length}</span>{' '}
+                  results
                 </p>
               </div>
               <div className="flex-1 flex justify-between sm:justify-end">
@@ -241,7 +280,11 @@ const AdminOrders = () => {
                     <button
                       key={page}
                       onClick={() => goToPage(page)}
-                      className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${currentPage === page ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                      className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
+                        currentPage === page
+                          ? 'bg-blue-600 text-white hover:bg-blue-700'
+                          : 'bg-white text-gray-700 hover:bg-gray-50'
+                      }`}
                     >
                       {page}
                     </button>
@@ -264,34 +307,69 @@ const AdminOrders = () => {
       {isModalOpen && currentOrder && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-xl max-w-2xl w-full">
-            <h2 className="text-2xl font-bold mb-6">Order Details #{currentOrder._id}</h2>
+            <h2 className="text-2xl font-bold mb-6">
+              Order Details #{currentOrder._id}
+            </h2>
             <div className="space-y-4 text-gray-700">
-              <p><strong>User ID:</strong> {currentOrder.userId}</p>
-              <p><strong>Total Amount:</strong> ${currentOrder.totalAmount.toFixed(2)}</p>
-              <p><strong>Status:</strong> <span className={`px-2 py-1 rounded-full text-sm font-medium ${getStatusColor(currentOrder.status)}`}>{currentOrder.status}</span></p>
-              <p><strong>Order Date:</strong> {new Date(currentOrder.createdAt).toLocaleString()}</p>
-              
+              <p>
+                <strong>User ID:</strong> {currentOrder.userId}
+              </p>
+              <p>
+                <strong>Total Amount:</strong> $
+                {currentOrder.totalAmount.toFixed(2)}
+              </p>
+              <p>
+                <strong>Status:</strong>{' '}
+                <span
+                  className={`px-2 py-1 rounded-full text-sm font-medium ${getStatusColor(
+                    currentOrder.status,
+                  )}`}
+                >
+                  {currentOrder.status}
+                </span>
+              </p>
+              <p>
+                <strong>Order Date:</strong>{' '}
+                {new Date(currentOrder.createdAt).toLocaleString()}
+              </p>
+
               <h3 className="text-lg font-semibold mt-6 mb-2">Items:</h3>
               <ul className="border border-gray-200 rounded-md divide-y divide-gray-200">
                 {currentOrder.items.map((item) => (
                   <li key={item._id} className="flex items-center py-3 px-4">
-                    <img src={item.medicine.imageUrl} alt={item.medicine.name} className="h-12 w-12 object-cover rounded-md mr-4" />
+                    <img
+                      src={item.medicine.imageUrl}
+                      alt={item.medicine.name}
+                      className="h-12 w-12 object-cover rounded-md mr-4"
+                    />
                     <div className="flex-1">
                       <p className="font-medium">{item.medicine.name}</p>
-                      <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
+                      <p className="text-sm text-gray-600">
+                        Qty: {item.quantity}
+                      </p>
                     </div>
-                    <p className="font-medium">${(item.price * item.quantity).toFixed(2)}</p>
+                    <p className="font-medium">
+                      ${(item.price * item.quantity).toFixed(2)}
+                    </p>
                   </li>
                 ))}
               </ul>
 
-              <h3 className="text-lg font-semibold mt-6 mb-2">Shipping Address:</h3>
+              <h3 className="text-lg font-semibold mt-6 mb-2">
+                Shipping Address:
+              </h3>
               <div className="bg-gray-50 p-4 rounded-md">
                 <p>{currentOrder.shippingAddress.street}</p>
-                <p>{currentOrder.shippingAddress.city}, {currentOrder.shippingAddress.state} {currentOrder.shippingAddress.zipCode}</p>
+                <p>
+                  {currentOrder.shippingAddress.city},{' '}
+                  {currentOrder.shippingAddress.state}{' '}
+                  {currentOrder.shippingAddress.zipCode}
+                </p>
               </div>
 
-              <p><strong>Payment Method:</strong> {currentOrder.paymentMethod}</p>
+              <p>
+                <strong>Payment Method:</strong> {currentOrder.paymentMethod}
+              </p>
             </div>
 
             <div className="flex justify-end mt-6">
@@ -309,4 +387,4 @@ const AdminOrders = () => {
   );
 };
 
-export default AdminOrders; 
+export default AdminOrders;

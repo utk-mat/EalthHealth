@@ -67,4 +67,4 @@ const usePagination = (items = [], itemsPerPage = 10) => {
   };
 };
 
-export default usePagination; 
+export default usePagination;

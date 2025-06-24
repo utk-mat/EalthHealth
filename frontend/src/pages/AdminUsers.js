@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchAllUsers, updateUser, deleteUser } from '../store/slices/authSlice';
+import {
+  fetchAllUsers,
+  updateUser,
+  deleteUser,
+} from '../store/slices/authSlice';
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaTimes } from 'react-icons/fa';
 import useForm from '../hooks/useForm';
 import useSearch from '../hooks/useSearch';
@@ -14,9 +18,17 @@ const AdminUsers = () => {
 
   const { searchTerm, handleSearch, filteredItems, clearSearch } = useSearch(
     allUsers,
-    ['name', 'email', 'role']
+    ['name', 'email', 'role'],
   );
-  const { paginatedItems, currentPage, totalPages, goToPage, nextPage, previousPage, getPageNumbers } = usePagination(filteredItems, 10);
+  const {
+    paginatedItems,
+    currentPage,
+    totalPages,
+    goToPage,
+    nextPage,
+    previousPage,
+    getPageNumbers,
+  } = usePagination(filteredItems, 10);
 
   const initialFormValues = {
     name: '',
@@ -42,10 +54,14 @@ const AdminUsers = () => {
     return errors;
   };
 
-  const { values, handleChange, handleSubmit, errors, resetForm, setFieldValue } = useForm(
-    initialFormValues,
-    validateForm
-  );
+  const {
+    values,
+    handleChange,
+    handleSubmit,
+    errors,
+    resetForm,
+    setFieldValue,
+  } = useForm(initialFormValues, validateForm);
 
   useEffect(() => {
     dispatch(fetchAllUsers());
@@ -81,7 +97,8 @@ const AdminUsers = () => {
       // For update, only send fields that are present in the form
       const updatedData = {};
       for (const key in values) {
-        if (key.includes('.')) { // Handle nested address object
+        if (key.includes('.')) {
+          // Handle nested address object
           const [parent, child] = key.split('.');
           if (!updatedData[parent]) updatedData[parent] = {};
           updatedData[parent][child] = values[key];
@@ -89,7 +106,9 @@ const AdminUsers = () => {
           updatedData[key] = values[key];
         }
       }
-      await dispatch(updateUser({ id: currentUser._id, userData: updatedData }));
+      await dispatch(
+        updateUser({ id: currentUser._id, userData: updatedData }),
+      );
     } else {
       // For new user, ensure all required fields are present
       await dispatch(updateUser({ id: 'new', userData: values })); // Using update for simplicity, could be separate createUser
@@ -147,10 +166,18 @@ const AdminUsers = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Name
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Email
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Role
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -163,7 +190,13 @@ const AdminUsers = () => {
                     {user.email}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.role === 'ADMIN' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'}`}>
+                    <span
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        user.role === 'ADMIN'
+                          ? 'bg-blue-100 text-blue-800'
+                          : 'bg-gray-100 text-gray-800'
+                      }`}
+                    >
                       {user.role}
                     </span>
                   </td>
@@ -194,8 +227,16 @@ const AdminUsers = () => {
             >
               <div className="hidden sm:block">
                 <p className="text-sm text-gray-700">
-                  Showing <span className="font-medium">{(currentPage - 1) * 10 + 1}</span> to <span className="font-medium">{Math.min(currentPage * 10, filteredItems.length)}</span> of{' '}
-                  <span className="font-medium">{filteredItems.length}</span> results
+                  Showing{' '}
+                  <span className="font-medium">
+                    {(currentPage - 1) * 10 + 1}
+                  </span>{' '}
+                  to{' '}
+                  <span className="font-medium">
+                    {Math.min(currentPage * 10, filteredItems.length)}
+                  </span>{' '}
+                  of <span className="font-medium">{filteredItems.length}</span>{' '}
+                  results
                 </p>
               </div>
               <div className="flex-1 flex justify-between sm:justify-end">
@@ -211,7 +252,11 @@ const AdminUsers = () => {
                     <button
                       key={page}
                       onClick={() => goToPage(page)}
-                      className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${currentPage === page ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                      className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${
+                        currentPage === page
+                          ? 'bg-blue-600 text-white hover:bg-blue-700'
+                          : 'bg-white text-gray-700 hover:bg-gray-50'
+                      }`}
                     >
                       {page}
                     </button>
@@ -239,7 +284,12 @@ const AdminUsers = () => {
             </h2>
             <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Name
+                </label>
                 <input
                   type="text"
                   id="name"
@@ -248,10 +298,17 @@ const AdminUsers = () => {
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
-                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                {errors.name && (
+                  <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+                )}
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Email
+                </label>
                 <input
                   type="email"
                   id="email"
@@ -260,10 +317,17 @@ const AdminUsers = () => {
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 />
-                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                {errors.email && (
+                  <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                )}
               </div>
               <div>
-                <label htmlFor="role" className="block text-sm font-medium text-gray-700">Role</label>
+                <label
+                  htmlFor="role"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Role
+                </label>
                 <select
                   id="role"
                   name="role"
@@ -274,12 +338,21 @@ const AdminUsers = () => {
                   <option value="USER">USER</option>
                   <option value="ADMIN">ADMIN</option>
                 </select>
-                {errors.role && <p className="text-red-500 text-xs mt-1">{errors.role}</p>}
+                {errors.role && (
+                  <p className="text-red-500 text-xs mt-1">{errors.role}</p>
+                )}
               </div>
               {/* Address Fields */}
-              <h3 className="text-lg font-semibold mt-6 mb-2">Address Details</h3>
+              <h3 className="text-lg font-semibold mt-6 mb-2">
+                Address Details
+              </h3>
               <div>
-                <label htmlFor="address.street" className="block text-sm font-medium text-gray-700">Street</label>
+                <label
+                  htmlFor="address.street"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Street
+                </label>
                 <input
                   type="text"
                   id="address.street"
@@ -291,7 +364,12 @@ const AdminUsers = () => {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="address.city" className="block text-sm font-medium text-gray-700">City</label>
+                  <label
+                    htmlFor="address.city"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    City
+                  </label>
                   <input
                     type="text"
                     id="address.city"
@@ -302,7 +380,12 @@ const AdminUsers = () => {
                   />
                 </div>
                 <div>
-                  <label htmlFor="address.state" className="block text-sm font-medium text-gray-700">State</label>
+                  <label
+                    htmlFor="address.state"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    State
+                  </label>
                   <input
                     type="text"
                     id="address.state"
@@ -314,7 +397,12 @@ const AdminUsers = () => {
                 </div>
               </div>
               <div>
-                <label htmlFor="address.zipCode" className="block text-sm font-medium text-gray-700">ZIP Code</label>
+                <label
+                  htmlFor="address.zipCode"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  ZIP Code
+                </label>
                 <input
                   type="text"
                   id="address.zipCode"
@@ -347,4 +435,4 @@ const AdminUsers = () => {
   );
 };
 
-export default AdminUsers; 
+export default AdminUsers;

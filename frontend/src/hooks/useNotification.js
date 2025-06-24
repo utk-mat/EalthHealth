@@ -3,48 +3,53 @@ import { useState, useCallback } from 'react';
 const useNotification = () => {
   const [notifications, setNotifications] = useState([]);
 
-  const addNotification = useCallback((message, type = 'info', duration = 5000) => {
-    const id = Date.now();
-    const notification = {
-      id,
-      message,
-      type,
-      duration,
-    };
+  const addNotification = useCallback(
+    (message, type = 'info', duration = 5000) => {
+      const id = Date.now();
+      const notification = {
+        id,
+        message,
+        type,
+        duration,
+      };
 
-    setNotifications((prev) => [...prev, notification]);
+      setNotifications((prev) => [...prev, notification]);
 
-    if (duration > 0) {
-      setTimeout(() => {
-        removeNotification(id);
-      }, duration);
-    }
+      if (duration > 0) {
+        setTimeout(() => {
+          removeNotification(id);
+        }, duration);
+      }
 
-    return id;
-  }, []);
+      return id;
+    },
+    [],
+  );
 
   const removeNotification = useCallback((id) => {
-    setNotifications((prev) => prev.filter((notification) => notification.id !== id));
+    setNotifications((prev) =>
+      prev.filter((notification) => notification.id !== id),
+    );
   }, []);
 
   const success = useCallback(
     (message, duration) => addNotification(message, 'success', duration),
-    [addNotification]
+    [addNotification],
   );
 
   const error = useCallback(
     (message, duration) => addNotification(message, 'error', duration),
-    [addNotification]
+    [addNotification],
   );
 
   const warning = useCallback(
     (message, duration) => addNotification(message, 'warning', duration),
-    [addNotification]
+    [addNotification],
   );
 
   const info = useCallback(
     (message, duration) => addNotification(message, 'info', duration),
-    [addNotification]
+    [addNotification],
   );
 
   return {
@@ -58,4 +63,4 @@ const useNotification = () => {
   };
 };
 
-export default useNotification; 
+export default useNotification;

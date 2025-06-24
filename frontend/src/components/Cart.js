@@ -11,21 +11,77 @@ import {
   TextField,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useCart } from '../context/CartContext';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchCart, removeFromCart, updateCartItemQuantity, clearCart } from '../store/slices/cartSlice';
 import { useNavigate } from 'react-router-dom';
 import { formatPrice } from '../utils/currency';
 
 const Cart = () => {
-  const { cart, removeFromCart, updateQuantity, getCartTotal, clearCart } = useCart();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { cart, loading, error } = useSelector((state) => state.cart);
+  const { user } = useSelector((state) => state.auth);
 
-  const handleQuantityChange = (medicineId, newQuantity) => {
+  React.useEffect(() => {
+    if (user) {
+      dispatch(fetchCart());
+    }
+  }, [dispatch, user]);
+
+  const handleQuantityChange = (cartItemId, newQuantity) => {
     if (newQuantity > 0) {
-      updateQuantity(medicineId, newQuantity);
+      dispatch(updateCartItemQuantity({ cartItemId, quantity: newQuantity }));
     }
   };
 
-  if (cart.length === 0) {
+  const handleRemoveItem = (medicineId) => {
+    dispatch(removeFromCart(medicineId));
+  };
+
+  const handleClearCart = () => {
+    dispatch(clearCart());
+  };
+
+  const handleCheckout = () => {
+    if (!user) {
+      navigate('/login', { state: { from: '/cart' } });
+    } else {
+      navigate('/checkout');
+    }
+  };
+
+  const cartItems = cart?.items || [];
+  const cartTotal = cartItems.reduce((sum, item) => sum + item.quantity * item.medicine.price, 0);
+
+  if (loading) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Paper elevation={3} sx={{ p: 4, textAlign: 'center' }}>
+          <Typography variant="h5" gutterBottom>
+            Loading cart...
+          </Typography>
+        </Paper>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Paper elevation={3} sx={{ p: 4, textAlign: 'center' }}>
+          <Typography variant="h5" gutterBottom>
+            Error Loading Cart
+          </Typography>
+          <Typography color="error">{error}</Typography>
+          <Button onClick={() => dispatch(fetchCart())} variant="contained" color="primary" sx={{ mt: 2 }}>
+            Retry
+          </Button>
+        </Paper>
+      </Container>
+    );
+  }
+
+  if (!cartItems || cartItems.length === 0) {
     return (
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Paper elevation={3} sx={{ p: 4, textAlign: 'center' }}>
@@ -50,33 +106,27 @@ const Cart = () => {
       <Typography variant="h4" component="h1" gutterBottom>
         Shopping Cart
       </Typography>
-
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
           <Paper elevation={3} sx={{ p: 3 }}>
-            {cart.map((item) => (
+            {cartItems.map((item) => (
               <Box key={item.id}>
                 <Grid container spacing={2} alignItems="center" sx={{ py: 2 }}>
                   <Grid item xs={12} sm={3}>
                     <Box
                       component="img"
-                      src={item.imageUrl}
-                      alt={item.name}
-                      sx={{
-                        width: '100%',
-                        height: 'auto',
-                        maxHeight: 100,
-                        objectFit: 'contain',
-                      }}
+                      src={item.medicine.imageUrl}
+                      alt={item.medicine.name}
+                      sx={{ width: '100%', height: 'auto', maxHeight: 100, objectFit: 'contain' }}
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
-                    <Typography variant="h6">{item.name}</Typography>
+                    <Typography variant="h6">{item.medicine.name}</Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {item.dosageForm} - {item.strength}
+                      {item.medicine.dosageForm} - {item.medicine.strength}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {formatPrice(item.price)} each
+                      {formatPrice(item.medicine.price)} each
                     </Typography>
                   </Grid>
                   <Grid item xs={12} sm={3}>
@@ -93,13 +143,9 @@ const Cart = () => {
                   <Grid item xs={12} sm={2}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                       <Typography variant="h6" color="primary">
-                        {formatPrice(item.price * item.quantity)}
+                        {formatPrice(item.medicine.price * item.quantity)}
                       </Typography>
-                      <IconButton
-                        color="error"
-                        onClick={() => removeFromCart(item.id)}
-                        size="small"
-                      >
+                      <IconButton color="error" onClick={() => handleRemoveItem(item.medicine._id || item.medicine.id)} size="small">
                         <DeleteIcon />
                       </IconButton>
                     </Box>
@@ -110,7 +156,6 @@ const Cart = () => {
             ))}
           </Paper>
         </Grid>
-
         <Grid item xs={12} md={4}>
           <Paper elevation={3} sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
@@ -122,9 +167,7 @@ const Cart = () => {
                   <Typography>Subtotal</Typography>
                 </Grid>
                 <Grid item>
-                  <Typography>
-                    {formatPrice(getCartTotal())}
-                  </Typography>
+                  <Typography>{formatPrice(cartTotal)}</Typography>
                 </Grid>
               </Grid>
             </Box>
@@ -136,7 +179,7 @@ const Cart = () => {
                 </Grid>
                 <Grid item>
                   <Typography variant="h6" color="primary">
-                    {formatPrice(getCartTotal())}
+                    {formatPrice(cartTotal)}
                   </Typography>
                 </Grid>
               </Grid>
@@ -147,7 +190,7 @@ const Cart = () => {
               fullWidth
               size="large"
               sx={{ mt: 2 }}
-              onClick={() => navigate('/checkout')}
+              onClick={handleCheckout}
             >
               Proceed to Checkout
             </Button>
@@ -157,7 +200,7 @@ const Cart = () => {
               fullWidth
               size="large"
               sx={{ mt: 2 }}
-              onClick={clearCart}
+              onClick={handleClearCart}
             >
               Clear Cart
             </Button>
@@ -168,4 +211,4 @@ const Cart = () => {
   );
 };
 
-export default Cart; 
+export default Cart;

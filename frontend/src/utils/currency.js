@@ -3,4 +3,4 @@ export const formatPrice = (price) => {
     style: 'currency',
     currency: 'INR',
   }).format(price);
-}; 
+};

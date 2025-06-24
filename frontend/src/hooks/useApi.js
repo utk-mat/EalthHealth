@@ -23,7 +23,7 @@ const useApi = () => {
     },
     (error) => {
       return Promise.reject(error);
-    }
+    },
   );
 
   // Add a response interceptor
@@ -36,7 +36,7 @@ const useApi = () => {
         console.error('Unauthorized access');
       }
       return Promise.reject(error);
-    }
+    },
   );
 
   const get = async (url, config = {}) => {
@@ -83,4 +83,4 @@ const useApi = () => {
   };
 };
 
-export default useApi; 
+export default useApi;

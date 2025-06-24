@@ -14,11 +14,11 @@ import {
 } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import { useCart } from '../context/CartContext';
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { getCartItemCount } = useCart();
+  const { cart } = useSelector((state) => state.cart);
   const token = localStorage.getItem('token');
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
@@ -32,7 +32,7 @@ const Navbar = () => {
       userInitial = user.name.charAt(0).toUpperCase();
     }
   } catch (e) {
-    console.error("Failed to parse user from localStorage", e);
+    console.error('Failed to parse user from localStorage', e);
   }
 
   const handleMenuOpen = (event) => {
@@ -78,18 +78,14 @@ const Navbar = () => {
             to="/cart"
             sx={{ mr: 1 }}
           >
-            <Badge badgeContent={getCartItemCount()} color="error">
+            <Badge badgeContent={cart?.items?.length || 0} color="error">
               <ShoppingCartIcon />
             </Badge>
           </IconButton>
 
           {token ? (
             <>
-              <Button
-                color="inherit"
-                component={RouterLink}
-                to="/medicines"
-              >
+              <Button color="inherit" component={RouterLink} to="/medicines">
                 Medicines
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -105,7 +101,9 @@ const Navbar = () => {
                   onClick={handleMenuOpen}
                   color="inherit"
                 >
-                  <Avatar sx={{ bgcolor: 'secondary.main' }}>{userInitial}</Avatar>
+                  <Avatar sx={{ bgcolor: 'secondary.main' }}>
+                    {userInitial}
+                  </Avatar>
                 </IconButton>
               </Box>
               <Menu
@@ -129,18 +127,10 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Button
-                color="inherit"
-                component={RouterLink}
-                to="/login"
-              >
+              <Button color="inherit" component={RouterLink} to="/login">
                 Login
               </Button>
-              <Button
-                color="inherit"
-                component={RouterLink}
-                to="/register"
-              >
+              <Button color="inherit" component={RouterLink} to="/register">
                 Register
               </Button>
             </>
@@ -151,4 +141,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar; 
+export default Navbar;

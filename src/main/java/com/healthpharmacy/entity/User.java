@@ -32,6 +32,8 @@ public class User {
     @Size(max = 20)
     private String phone;
 
+    private Address address;
+
     private Set<String> roles = new HashSet<>();
 
     public User() {
@@ -82,6 +84,14 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public Set<String> getRoles() {

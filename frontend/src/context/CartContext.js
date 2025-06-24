@@ -21,34 +21,32 @@ export const CartProvider = ({ children }) => {
   }, [cart]);
 
   const addToCart = (medicine, quantity = 1) => {
-    setCart(prevCart => {
-      const existingItem = prevCart.find(item => item.id === medicine.id);
-      
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((item) => item.id === medicine.id);
+
       if (existingItem) {
-        return prevCart.map(item =>
+        return prevCart.map((item) =>
           item.id === medicine.id
             ? { ...item, quantity: item.quantity + quantity }
-            : item
+            : item,
         );
       }
-      
+
       return [...prevCart, { ...medicine, quantity }];
     });
   };
 
   const removeFromCart = (medicineId) => {
-    setCart(prevCart => prevCart.filter(item => item.id !== medicineId));
+    setCart((prevCart) => prevCart.filter((item) => item.id !== medicineId));
   };
 
   const updateQuantity = (medicineId, quantity) => {
     if (quantity < 1) return;
-    
-    setCart(prevCart =>
-      prevCart.map(item =>
-        item.id === medicineId
-          ? { ...item, quantity }
-          : item
-      )
+
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.id === medicineId ? { ...item, quantity } : item,
+      ),
     );
   };
 
@@ -57,7 +55,7 @@ export const CartProvider = ({ children }) => {
   };
 
   const getCartTotal = () => {
-    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
   const getCartItemCount = () => {
@@ -79,4 +77,4 @@ export const CartProvider = ({ children }) => {
       {children}
     </CartContext.Provider>
   );
-}; 
+};

@@ -4,6 +4,7 @@ import com.healthpharmacy.entity.Order;
 import com.healthpharmacy.entity.User;
 import com.healthpharmacy.service.OrderService;
 import com.healthpharmacy.service.UserService;
+import com.healthpharmacy.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,9 @@ public class OrderController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
     @GetMapping
     public ResponseEntity<List<Order>> getAllOrders() {
         return ResponseEntity.ok(orderService.getAllOrders());
@@ -34,7 +38,7 @@ public class OrderController {
                 .orElseThrow(() -> new RuntimeException("User not found"));
             return ResponseEntity.ok(orderService.getOrdersByUser(user));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.status(400).body(List.of());
         }
     }
 
@@ -83,10 +87,10 @@ public class OrderController {
     }
 
     private String extractEmailFromToken(String token) {
-        // Remove "Bearer " prefix
-        token = token.substring(7);
-        // In a real application, you would decode the JWT token here
-        // For now, we'll just return a dummy email
-        return "user@example.com";
+        if (token != null && token.startsWith("Bearer ")) {
+            String jwt = token.substring(7);
+            return jwtTokenProvider.getUsernameFromToken(jwt);
+        }
+        throw new RuntimeException("Invalid or missing token");
     }
 } 

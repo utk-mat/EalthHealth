@@ -1,33 +1,47 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+
 import {
   fetchCart,
-  removeFromCart,
+  removeCartItem,
   updateCartItemQuantity,
   clearCart,
 } from '../store/slices/cartSlice';
+
+///import { fetchCart, removeFromCart, updateCartItemQuantity, clearCart } from '../store/slices/cartSlice';
 import { FaTrash, FaMinus, FaPlus } from 'react-icons/fa';
 import { formatPrice } from '../utils/currency';
 
 const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { items, total, loading, error } = useSelector((state) => state.cart);
+  const { cart, loading, error } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(fetchCart());
-  }, [dispatch]);
+    // Only fetch cart if user is authenticated
+    if (user) {
+      dispatch(fetchCart());
+    }
+  }, [dispatch, user]);
 
-  const handleQuantityChange = (medicineId, newQuantity) => {
+  const handleQuantityChange = (cartItemId, newQuantity) => {
     if (newQuantity > 0) {
-      dispatch(updateCartItemQuantity({ medicineId, quantity: newQuantity }));
+      dispatch(updateCartItemQuantity({ cartItemId, quantity: newQuantity }));
     }
   };
 
-  const handleRemoveItem = (medicineId) => {
-    dispatch(removeFromCart(medicineId));
+  // const handleRemoveItem = (medicineId) => {
+  //   dispatch(removeFromCart(medicineId));
+  // };
+
+  const handleRemoveItem = (cartItemId) => {
+    dispatch(removeCartItem(cartItemId));
+  };
+
+  const handleClearCart = () => {
+    dispatch(clearCart());
   };
 
   const handleCheckout = () => {
@@ -37,6 +51,14 @@ const Cart = () => {
       navigate('/checkout');
     }
   };
+
+  console.log('Cart state:', cart);
+  const cartItems = cart?.items || [];
+  console.log('Cart items:', cartItems);
+  const cartTotal = cartItems.reduce(
+    (sum, item) => sum + item.quantity * item.medicine.price,
+    0,
+  );
 
   if (loading) {
     return (
@@ -68,7 +90,7 @@ const Cart = () => {
     );
   }
 
-  if (!items || items.length === 0) {
+  if (!cartItems || cartItems.length === 0) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="text-center">
@@ -90,20 +112,22 @@ const Cart = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in-up">
+      <h1 className="text-3xl font-bold text-primary mb-8 drop-shadow-lg">
+        Shopping Cart
+      </h1>
 
-      <div className="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start">
+      <div className="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start animate-fade-in-up delay-200">
         <div className="lg:col-span-7">
-          <div className="bg-white shadow-md rounded-lg overflow-hidden">
+          <div className="bg-white shadow-soft rounded-2xl overflow-hidden animate-fade-in-up">
             <ul className="divide-y divide-gray-200">
-              {items.map((item) => (
-                <li key={item.medicine._id} className="p-6">
+              {cartItems.map((item) => (
+                <li key={item.id} className="p-6 group">
                   <div className="flex items-center">
                     <img
                       src={item.medicine.imageUrl}
                       alt={item.medicine.name}
-                      className="h-24 w-24 object-cover rounded-md"
+                      className="h-24 w-24 object-cover rounded-xl shadow-soft group-hover:scale-105 transition-transform duration-200"
                     />
                     <div className="ml-6 flex-1">
                       <div className="flex items-center justify-between">
@@ -111,8 +135,8 @@ const Cart = () => {
                           {item.medicine.name}
                         </h3>
                         <button
-                          onClick={() => handleRemoveItem(item.medicine._id)}
-                          className="text-gray-400 hover:text-red-500"
+                          onClick={() => handleRemoveItem(item.id)}
+                          className="text-gray-400 hover:text-accent-pink transition-colors duration-200 group-hover:scale-110"
                         >
                           <FaTrash className="h-5 w-5" />
                         </button>
@@ -124,12 +148,9 @@ const Cart = () => {
                         <div className="flex items-center">
                           <button
                             onClick={() =>
-                              handleQuantityChange(
-                                item.medicine._id,
-                                item.quantity - 1
-                              )
+                              handleQuantityChange(item.id, item.quantity - 1)
                             }
-                            className="text-gray-500 hover:text-gray-700"
+                            className="text-gray-500 hover:text-primary transition-colors duration-200 group-hover:scale-110"
                           >
                             <FaMinus className="h-4 w-4" />
                           </button>
@@ -138,17 +159,14 @@ const Cart = () => {
                           </span>
                           <button
                             onClick={() =>
-                              handleQuantityChange(
-                                item.medicine._id,
-                                item.quantity + 1
-                              )
+                              handleQuantityChange(item.id, item.quantity + 1)
                             }
-                            className="text-gray-500 hover:text-gray-700"
+                            className="text-gray-500 hover:text-primary transition-colors duration-200 group-hover:scale-110"
                           >
                             <FaPlus className="h-4 w-4" />
                           </button>
                         </div>
-                        <p className="text-lg font-medium text-gray-900">
+                        <p className="text-lg font-medium text-primary">
                           {formatPrice(item.medicine.price * item.quantity)}
                         </p>
                       </div>
@@ -157,33 +175,43 @@ const Cart = () => {
                 </li>
               ))}
             </ul>
+            <div className="p-6 text-right">
+              <button
+                onClick={handleClearCart}
+                className="text-accent-purple hover:text-accent-pink font-medium transition-colors duration-200"
+              >
+                Clear Cart
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className="mt-10 lg:mt-0 lg:col-span-5">
-          <div className="bg-gray-50 rounded-lg p-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">
+        <div className="mt-10 lg:mt-0 lg:col-span-5 animate-fade-in-up delay-300">
+          <div className="bg-gradient-to-br from-accent-purple/10 via-white to-accent-pink/10 rounded-2xl p-6 shadow-soft">
+            <h2 className="text-lg font-medium text-primary mb-4">
               Order Summary
             </h2>
             <div className="space-y-4">
               <div className="flex justify-between text-sm">
                 <p className="text-gray-600">Subtotal</p>
-                <p className="font-medium text-gray-900">{formatPrice(total)}</p>
+                <p className="font-medium text-primary">
+                  {formatPrice(cartTotal)}
+                </p>
               </div>
               <div className="flex justify-between text-sm">
                 <p className="text-gray-600">Shipping</p>
-                <p className="font-medium text-gray-900">Free</p>
+                <p className="font-medium text-primary">Free</p>
               </div>
               <div className="border-t border-gray-200 pt-4">
                 <div className="flex justify-between text-base font-medium">
-                  <p className="text-gray-900">Total</p>
-                  <p className="text-gray-900">{formatPrice(total)}</p>
+                  <p className="text-primary">Total</p>
+                  <p className="text-primary">{formatPrice(cartTotal)}</p>
                 </div>
               </div>
             </div>
             <button
               onClick={handleCheckout}
-              className="mt-6 w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="mt-6 w-full bg-accent-purple text-white py-3 px-4 rounded-xl hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all duration-200 font-semibold shadow-accent"
             >
               {user ? 'Proceed to Checkout' : 'Login to Checkout'}
             </button>
@@ -194,4 +222,4 @@ const Cart = () => {
   );
 };
 
-export default Cart; 
+export default Cart;

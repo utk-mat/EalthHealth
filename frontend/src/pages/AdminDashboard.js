@@ -63,7 +63,9 @@ const AdminDashboard = () => {
             <p className="text-3xl font-bold text-green-900">567</p>
           </div>
           <div className="bg-yellow-50 rounded-lg p-6 shadow-sm">
-            <p className="text-yellow-700 text-sm font-medium">Medicines in Stock</p>
+            <p className="text-yellow-700 text-sm font-medium">
+              Medicines in Stock
+            </p>
             <p className="text-3xl font-bold text-yellow-900">890</p>
           </div>
         </div>
@@ -72,4 +74,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard; 
+export default AdminDashboard;

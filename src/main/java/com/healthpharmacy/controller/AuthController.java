@@ -62,17 +62,20 @@ public class AuthController {
     public ResponseEntity<?> getCurrentUser(@RequestHeader("Authorization") String token) {
         try {
             String email = extractEmailFromToken(token);
-            return ResponseEntity.ok(userService.getUserByEmail(email));
+            User user = userService.getUserByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+            
+            // Return a UserResponse object instead of Optional<User>
+            UserResponse userResponse = new UserResponse(user);
+            return ResponseEntity.ok(userResponse);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Invalid token");
+            return ResponseEntity.badRequest().body(e.getMessage()); // Return error message as JSON
         }
     }
 
     private String extractEmailFromToken(String token) {
         // Remove "Bearer " prefix
         token = token.substring(7);
-        // In a real application, you would decode the JWT token here
-        // For now, we'll just return a dummy email
-        return "user@example.com";
+        return tokenProvider.getUsernameFromToken(token);
     }
 } 

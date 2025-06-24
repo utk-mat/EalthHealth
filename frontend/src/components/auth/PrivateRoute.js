@@ -20,4 +20,4 @@ const PrivateRoute = ({ children, element: Element, adminOnly = false }) => {
   return children;
 };
 
-export default PrivateRoute; 
+export default PrivateRoute;

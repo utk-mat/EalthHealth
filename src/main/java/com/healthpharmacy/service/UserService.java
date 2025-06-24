@@ -52,11 +52,18 @@ public class UserService implements UserDetailsService {
             throw new RuntimeException("Email already exists");
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(new HashSet<>());
-        user.getRoles().add("ROLE_USER");
+        // Ensure all fields are set from the incoming user object
+        User newUser = new User();
+        newUser.setEmail(user.getEmail());
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        newUser.setName(user.getName()); // Set name
+        newUser.setPhone(user.getPhone()); // Set phone
+        newUser.setAddress(user.getAddress()); // Set address
 
-        return userRepository.save(user);
+        newUser.setRoles(new HashSet<>());
+        newUser.getRoles().add("ROLE_USER");
+
+        return userRepository.save(newUser);
     }
 
     public Optional<User> getUserByEmail(String email) {

@@ -2,6 +2,9 @@ package com.healthpharmacy.entity;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,17 +12,22 @@ import java.util.List;
 public class Cart {
     @Id
     private String id;
+
+    @NotBlank
     private String userId;
-    private List<CartItem> items = new ArrayList<>();
-    private double total;
+
+    @DBRef
+    private List<CartItem> items; // Reference to CartItem documents
+
+    @NotNull
+    private Boolean isActive; // To identify the user's active cart
 
     public Cart() {
+        this.items = new ArrayList<>();
+        this.isActive = true; // Default to active when created
     }
 
-    public Cart(String userId) {
-        this.userId = userId;
-    }
-
+    // Getters and Setters
     public String getId() {
         return id;
     }
@@ -44,11 +52,11 @@ public class Cart {
         this.items = items;
     }
 
-    public double getTotal() {
-        return total;
+    public Boolean getActive() {
+        return isActive;
     }
 
-    public void setTotal(double total) {
-        this.total = total;
+    public void setActive(Boolean active) {
+        isActive = active;
     }
 } 

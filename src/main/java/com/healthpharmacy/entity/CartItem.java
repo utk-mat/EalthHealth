@@ -11,8 +11,6 @@ public class CartItem {
     @Id
     private String id;
 
-    private String cartId;
-
     @DBRef
     private Medicine medicine;
 
@@ -23,8 +21,7 @@ public class CartItem {
     public CartItem() {
     }
 
-    public CartItem(String cartId, Medicine medicine, Integer quantity) {
-        this.cartId = cartId;
+    public CartItem(Medicine medicine, Integer quantity) {
         this.medicine = medicine;
         this.quantity = quantity;
     }
@@ -35,14 +32,6 @@ public class CartItem {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getCartId() {
-        return cartId;
-    }
-
-    public void setCartId(String cartId) {
-        this.cartId = cartId;
     }
 
     public Medicine getMedicine() {

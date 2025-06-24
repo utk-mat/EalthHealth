@@ -18,7 +18,7 @@ const useSearch = (items = [], searchFields = []) => {
         searchFields.some((field) => {
           const value = item[field];
           return value && value.toString().toLowerCase().includes(searchLower);
-        })
+        }),
       );
     }
 
@@ -107,4 +107,4 @@ const useSearch = (items = [], searchFields = []) => {
   };
 };
 
-export default useSearch; 
+export default useSearch;

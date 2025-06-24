@@ -1,140 +1,131 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchFeaturedMedicines } from '../store/slices/medicineSlice';
-import { FaArrowRight, FaTruck, FaShieldAlt, FaHeadset } from 'react-icons/fa';
-import { formatPrice } from '../utils/currency';
+import React from 'react';
+import HomeHero from '../components/layout/HomeHero';
+import QuickAccessCards from '../components/layout/QuickAccessCards';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import HeadsetMicIcon from '@mui/icons-material/HeadsetMic';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
-  const dispatch = useDispatch();
-  const { featuredMedicines, loading, error } = useSelector((state) => state.medicine);
-
-  useEffect(() => {
-    dispatch(fetchFeaturedMedicines());
-  }, [dispatch]);
+  const navigate = useNavigate();
+  // Placeholder handlers for search and prescription upload
+  const handleSearch = (query) => {
+    // TODO: Implement search navigation or filtering
+    console.log('Search:', query);
+  };
+  const handlePrescriptionUpload = (file) => {
+    // TODO: Implement prescription upload logic
+    alert('Prescription uploaded: ' + file.name);
+  };
+  const handleCardClick = (title) => {
+    if (title === 'Medicine') {
+      navigate('/medicines');
+    } else {
+      alert('Clicked: ' + title);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-700 to-blue-900 text-white py-20 md:py-32 flex items-center justify-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6 animate-fade-in-up">
-            Your Health, Our Priority
-          </h1>
-          <p className="text-xl md:text-2xl mb-10 opacity-90 animate-fade-in-up delay-200">
-            Quality medicines and healthcare products delivered to your doorstep
-          </p>
-          <Link
-            to="/medicines"
-            className="inline-flex items-center px-8 py-4 border border-transparent text-base font-semibold rounded-full shadow-lg text-blue-800 bg-white hover:bg-blue-100 transition duration-300 ease-in-out transform hover:scale-105 animate-fade-in-up delay-400"
-          >
-            Shop Now
-            <FaArrowRight className="ml-3 text-xl" />
-          </Link>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #f8faff 0%, #e3f0ff 100%)', // Soft, subtle gradient for the whole page
+      }}
+    >
+      {/* Main Content - unified, no extra boxes */}
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '48px 16px 0 16px' }}>
+        <h1 style={{
+          color: '#222',
+          fontWeight: 800,
+          fontSize: '2.3rem',
+          marginBottom: 32,
+          textAlign: 'center',
+        }}>
+          What are you looking for?
+        </h1>
+        <div style={{ width: '100%', maxWidth: 540, margin: '0 auto 32px auto' }}>
+          <HomeHero
+            onSearch={handleSearch}
+            onPrescriptionUpload={handlePrescriptionUpload}
+          />
         </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-16 md:py-24 bg-white shadow-inner">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            <div className="text-center p-6 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition duration-200">
-              <div className="flex justify-center mb-4">
-                <FaTruck className="h-16 w-16 text-blue-600" />
-              </div>
-              <h3 className="mt-4 text-2xl font-bold text-gray-900">Fast Delivery</h3>
-              <p className="mt-2 text-lg text-gray-600">
-                Quick and reliable delivery to your location, every time.
-              </p>
-            </div>
-            <div className="text-center p-6 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition duration-200">
-              <div className="flex justify-center mb-4">
-                <FaShieldAlt className="h-16 w-16 text-blue-600" />
-              </div>
-              <h3 className="mt-4 text-2xl font-bold text-gray-900">Authentic Products</h3>
-              <p className="mt-2 text-lg text-gray-600">
-                Guaranteed genuine medicines and high-quality healthcare products.
-              </p>
-            </div>
-            <div className="text-center p-6 bg-blue-50 rounded-lg shadow-sm hover:shadow-md transition duration-200">
-              <div className="flex justify-center mb-4">
-                <FaHeadset className="h-16 w-16 text-blue-600" />
-              </div>
-              <h3 className="mt-4 text-2xl font-bold text-gray-900">24/7 Support</h3>
-              <p className="mt-2 text-lg text-gray-600">
-                Our dedicated team is here to assist you round-the-clock.
-              </p>
-            </div>
+        <div style={{ marginTop: 32 }}>
+          <QuickAccessCards onCardClick={handleCardClick} />
+        </div>
+        {/* Feature Cards Section */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: 40,
+          margin: '48px auto 0 auto',
+          maxWidth: 1200,
+          flexWrap: 'wrap',
+        }}>
+          <div className="feature-card" style={{ background: '#fff', borderRadius: 32, boxShadow: '0 8px 32px 0 rgba(59,130,246,0.07)', padding: '40px 32px', flex: 1, minWidth: 300, maxWidth: 380, textAlign: 'center', margin: '12px 0', transition: 'box-shadow 0.3s, transform 0.3s' }}>
+            <span className="feature-icon" style={{ display: 'inline-block', marginBottom: 18, transition: 'transform 0.3s' }}>
+              <LocalShippingIcon style={{ fontSize: 56, color: '#2563eb' }} />
+            </span>
+            <h3 style={{ fontWeight: 700, fontSize: 26, marginBottom: 10 }}>Fast Delivery</h3>
+            <p style={{ color: '#555', fontSize: 18 }}>Quick and reliable delivery to your location, every time.</p>
+          </div>
+          <div className="feature-card" style={{ background: '#fff', borderRadius: 32, boxShadow: '0 8px 32px 0 rgba(59,130,246,0.07)', padding: '40px 32px', flex: 1, minWidth: 300, maxWidth: 380, textAlign: 'center', margin: '12px 0', transition: 'box-shadow 0.3s, transform 0.3s' }}>
+            <span className="feature-icon" style={{ display: 'inline-block', marginBottom: 18, transition: 'transform 0.3s' }}>
+              <VerifiedUserIcon style={{ fontSize: 56, color: '#a78bfa' }} />
+            </span>
+            <h3 style={{ fontWeight: 700, fontSize: 26, marginBottom: 10 }}>Authentic Products</h3>
+            <p style={{ color: '#555', fontSize: 18 }}>Guaranteed genuine medicines and high-quality healthcare products.</p>
+          </div>
+          <div className="feature-card" style={{ background: '#fff', borderRadius: 32, boxShadow: '0 8px 32px 0 rgba(59,130,246,0.07)', padding: '40px 32px', flex: 1, minWidth: 300, maxWidth: 380, textAlign: 'center', margin: '12px 0', transition: 'box-shadow 0.3s, transform 0.3s' }}>
+            <span className="feature-icon" style={{ display: 'inline-block', marginBottom: 18, transition: 'transform 0.3s' }}>
+              <HeadsetMicIcon style={{ fontSize: 56, color: '#ec4899' }} />
+            </span>
+            <h3 style={{ fontWeight: 700, fontSize: 26, marginBottom: 10 }}>24/7 Support</h3>
+            <p style={{ color: '#555', fontSize: 18 }}>Our dedicated team is here to assist you round-the-clock.</p>
           </div>
         </div>
-      </section>
-
-      {/* Featured Products Section */}
-      <section className="py-16 md:py-24 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-extrabold text-center text-gray-900 mb-12">
-            Our Featured Products
-          </h2>
-          {loading ? (
-            <div className="text-center text-blue-600 text-xl">Loading featured products...</div>
-          ) : error ? (
-            <div className="text-center text-red-600 text-xl">Error: {error}</div>
-          ) : featuredMedicines && featuredMedicines.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {featuredMedicines.map((medicine) => (
-                <div
-                  key={medicine._id}
-                  className="bg-white rounded-lg shadow-xl overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-2xl"
-                >
-                  <img
-                    src={medicine.imageUrl}
-                    alt={medicine.name}
-                    className="w-full h-56 object-cover object-center"
-                  />
-                  <div className="p-5">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">{medicine.name}</h3>
-                    <p className="text-gray-700 text-base mb-4 line-clamp-3">{medicine.description}</p>
-                    <div className="flex justify-between items-center mt-auto pt-3 border-t border-gray-100">
-                      <span className="text-2xl font-extrabold text-blue-700">
-                        {formatPrice(medicine.price)}
-                      </span>
-                      <Link
-                        to={`/medicines/${medicine._id}`}
-                        className="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-700 transition duration-300 ease-in-out text-sm font-semibold"
-                      >
-                        View Details
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center text-gray-600 text-xl">No featured products available at the moment.</div>
-          )}
-        </div>
-      </section>
-
-      {/* Call to Action Section */}
-      <section className="bg-blue-600 text-white py-20 flex items-center justify-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-extrabold mb-4">
-            Need Personalized Advice?
-          </h2>
-          <p className="text-xl opacity-90 mb-10">
-            Our experienced pharmacists are ready to assist you with your health needs.
-          </p>
-          <Link
-            to="/contact"
-            className="inline-flex items-center px-8 py-4 border border-transparent text-base font-semibold rounded-full shadow-lg text-blue-800 bg-white hover:bg-blue-100 transition duration-300 ease-in-out transform hover:scale-105"
+        <style>{`
+          .feature-card:hover {
+            box-shadow: 0 16px 48px 0 rgba(59,130,246,0.18);
+            transform: translateY(-10px) scale(1.03);
+          }
+          .feature-card:hover .feature-icon {
+            transform: scale(1.18) rotate(-6deg);
+          }
+        `}</style>
+        {/* Personalized Advice Banner */}
+        <div style={{
+          margin: '56px auto 0 auto',
+          maxWidth: 1200,
+          borderRadius: 40,
+          background: 'linear-gradient(90deg, #a18cd1 0%, #fa71cd 50%, #21d4fd 100%)',
+          textAlign: 'center',
+          padding: '56px 24px 48px 24px',
+          color: '#fff',
+          boxShadow: '0 8px 32px 0 rgba(59,130,246,0.10)',
+        }}>
+          <h2 style={{ fontWeight: 800, fontSize: 38, marginBottom: 18 }}>Need Personalized Advice?</h2>
+          <p style={{ fontSize: 22, marginBottom: 36 }}>Our experienced pharmacists are ready to assist you with your health needs.</p>
+          <a
+            href="/contact"
+            style={{
+              display: 'inline-block',
+              background: '#fff',
+              color: '#2563eb',
+              fontWeight: 700,
+              fontSize: '1.25rem',
+              padding: '16px 40px',
+              borderRadius: 40,
+              boxShadow: '0 4px 24px 0 rgba(59,130,246,0.10)',
+              textDecoration: 'none',
+              transition: 'all 0.2s',
+            }}
           >
-            Contact Our Pharmacists
-            <FaArrowRight className="ml-3 text-xl" />
-          </Link>
+            Contact Our Pharmacists &nbsp; <span style={{fontSize: '1.3em', verticalAlign: 'middle'}}>&#8594;</span>
+          </a>
         </div>
-      </section>
+      </div>
     </div>
   );
 };
 
-export default Home; 
+export default Home;

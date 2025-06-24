@@ -1,5 +1,6 @@
 package com.healthpharmacy.payload;
 
+import com.healthpharmacy.entity.Address;
 import com.healthpharmacy.entity.User;
 
 import java.util.Set;
@@ -10,6 +11,7 @@ public class UserResponse {
     private String email;
     private String phone;
     private Set<String> roles;
+    private Address address;
 
     public UserResponse() {
     }
@@ -20,6 +22,7 @@ public class UserResponse {
         this.email = user.getEmail();
         this.phone = user.getPhone();
         this.roles = user.getRoles();
+        this.address = user.getAddress();
     }
 
     // Getters and Setters
@@ -61,5 +64,13 @@ public class UserResponse {
 
     public void setRoles(Set<String> roles) {
         this.roles = roles;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 } 

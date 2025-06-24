@@ -1,5 +1,10 @@
 import React from 'react';
-import { FaCheckCircle, FaExclamationCircle, FaInfoCircle, FaExclamationTriangle } from 'react-icons/fa';
+import {
+  FaCheckCircle,
+  FaExclamationCircle,
+  FaInfoCircle,
+  FaExclamationTriangle,
+} from 'react-icons/fa';
 
 const Notification = ({ notification, onRemove }) => {
   const { id, message, type } = notification;
@@ -80,4 +85,4 @@ const Notification = ({ notification, onRemove }) => {
   );
 };
 
-export default Notification; 
+export default Notification;
