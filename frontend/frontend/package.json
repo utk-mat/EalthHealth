@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "health-pharmacy-frontend": "file:.."
+  }
+}
