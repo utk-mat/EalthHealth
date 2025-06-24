@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "health-pharmacy-frontend": "file:.."
+  },
+  "scripts": {
+    "build": "react-scripts build"
   }
 }
