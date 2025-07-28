@@ -96,4 +96,4 @@ The application uses JWT (JSON Web Tokens) for authentication. All API endpoints
 
 ## License
 
-This project is licensed under the MIT License. 
+This project is licensed under the Ealth Technologies, VIT-TBI. 
